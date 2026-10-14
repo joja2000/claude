@@ -4,7 +4,9 @@ Site estático (HTML, CSS e JS puros, sem build) com 4 abas: **A Carta**, **Refe
 **Assinaturas** e **Instagram**. O visual segue o selo da carta: tinta azul sobre papel.
 
 ## Ver no computador
-Abra `public/index.html` no navegador, ou rode `cd public && python3 -m http.server 8080`
+**Jeito mais fácil:** dê dois cliques em `carta-rio-grande-arquivo-unico.html`. Ele já tem as cores, as imagens e as funções dentro dele e funciona até se for copiado sozinho para outro lugar (só as fontes precisam de internet).
+
+A versão em pastas (`public/`) é a que vai para o ar. Para ver essa versão, **descompacte o zip primeiro**. Abra `public/index.html` no navegador, ou rode `cd public && python3 -m http.server 8080`
 e acesse http://localhost:8080.
 
 ## Publicar
@@ -41,3 +43,6 @@ O botão "Em breve" vira "Seguir no Instagram". Os 6 quadrados são prévias com
 ## Antes de divulgar
 - Troque `og:image` no `index.html` pelo endereço completo depois de publicar
   (ex.: `https://seusite.com.br/assets/img/og-image.png`). Assim a prévia aparece no WhatsApp e nas redes.
+
+
+> O `carta-rio-grande-arquivo-unico.html` é uma cópia gerada a partir de `public/`. Se você editar o site, gere de novo ou edite os dois.
