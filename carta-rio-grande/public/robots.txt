@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://riograndepelobrasil.com.br/sitemap.xml
