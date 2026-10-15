@@ -5,17 +5,12 @@
   /* ===== CONFIGURAÇÃO — preencha quando estiver pronto ===== */
   // Link do Google Forms. Use o link "incorporar" (termina em ?embedded=true) ou o link normal do formulário.
   var FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdI3jDKYomnJKrwO6jj3Y6d6f1lj1PSOuUAOQwk4hUf1v1UsA/viewform';
-  // Perfil do Instagram, ex.: 'https://www.instagram.com/cartadoriogrande/' e '@cartadoriogrande'
-  var INSTAGRAM_URL = 'https://www.instagram.com/riograndepelobrasil/';
-  var INSTAGRAM_HANDLE = '@riograndepelobrasil';
-  // Planilha das assinaturas publicada como CSV (Arquivo → Compartilhar → Publicar na Web → aba "Site" → CSV).
-  // Cole aqui o link que termina em output=csv. A primeira coluna é o nome; as demais aparecem abaixo dele.
-  var SIGNERS_CSV_URL = '';
-  // Feed do Behold (behold.so → seu feed → "JSON Feed URL", ex.: https://feeds.behold.so/abc123)
-  var BEHOLD_FEED_URL = '';
+  // Planilha de respostas do Forms: o site lê só as colunas B, D e H (a B aparece como nome).
+  // A planilha precisa estar visível para "qualquer pessoa com o link" (Leitor).
+  var SIGNERS_CSV_URL = 'https://docs.google.com/spreadsheets/d/1h1Fcr4d4R4TnodCWHhrL0XV0xE6esarxEwazFB4Yi2c/gviz/tq?tqx=out:csv&gid=1031110268&tq=' + encodeURIComponent('select B, D, H');
   /* ========================================================= */
 
-  var TABS = ['carta', 'referencias', 'assinaturas', 'instagram'];
+  var TABS = ['carta', 'referencias', 'assinaturas', 'contato'];
   var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
 
   function showTab(id, opts) {
@@ -47,6 +42,7 @@
   // Âncoras dentro da carta (ex.: #leitura) pertencem à aba "A Carta"
   function tabFromHash() {
     var hash = location.hash.slice(1);
+    if (hash === 'instagram') return 'contato';
     if (TABS.indexOf(hash) !== -1) return hash;
     var el = hash && document.getElementById(hash);
     var panel = el && el.closest('[role="tabpanel"]');
@@ -141,20 +137,6 @@
     if (seal) seal.hidden = true;
   }
 
-  /* ===== Instagram (quando INSTAGRAM_URL for preenchido) ===== */
-  if (INSTAGRAM_URL) {
-    var igLink = document.querySelector('[data-ig-link]');
-    igLink.href = INSTAGRAM_URL;
-    igLink.target = '_blank';
-    igLink.rel = 'noopener';
-    igLink.removeAttribute('aria-disabled');
-    igLink.classList.remove('is-disabled');
-    document.querySelector('[data-ig-label]').textContent = 'Seguir no Instagram';
-    if (INSTAGRAM_HANDLE) document.querySelector('[data-ig-handle]').textContent = INSTAGRAM_HANDLE;
-  } else {
-    var disabled = document.querySelector('[data-ig-link]');
-    if (disabled) disabled.addEventListener('click', function (e) { e.preventDefault(); });
-  }
 
   /* ===== Lista de assinaturas (planilha publicada como CSV) ===== */
   function parseCSV(text) {
@@ -207,47 +189,4 @@
       .catch(function () { /* mantém os espaços de exemplo se a planilha não carregar */ });
   }
 
-  /* ===== Posts reais do Instagram via Behold ===== */
-  var igGrid = document.querySelector('[data-ig-grid]');
-  if (BEHOLD_FEED_URL && igGrid) {
-    fetch(BEHOLD_FEED_URL)
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (data) {
-        var posts = (Array.isArray(data) ? data : data.posts || []).slice(0, 9);
-        if (posts.length > 3) posts = posts.slice(0, posts.length - posts.length % 3); // linhas completas
-        if (!posts.length) return;
-        igGrid.innerHTML = '';
-        posts.forEach(function (post) {
-          var sizes = post.sizes || {};
-          var pick = sizes.medium || sizes.small || sizes.large || {};
-          var src = pick.mediaUrl || (post.mediaType === 'VIDEO' ? post.thumbnailUrl : post.mediaUrl);
-          if (!src) return;
-          var caption = (post.prunedCaption || post.caption || '').trim();
-          var li = document.createElement('li');
-          li.className = 'post post--photo';
-          var a = document.createElement('a');
-          a.href = post.permalink || INSTAGRAM_URL;
-          a.target = '_blank';
-          a.rel = 'noopener';
-          var img = document.createElement('img');
-          img.src = src;
-          img.loading = 'lazy';
-          img.alt = caption ? caption.slice(0, 140) : 'Publicação no Instagram';
-          a.appendChild(img);
-          if (post.mediaType === 'VIDEO' || post.mediaType === 'CAROUSEL_ALBUM') {
-            var badge = document.createElement('span');
-            badge.className = 'post-badge';
-            badge.textContent = post.mediaType === 'VIDEO' ? 'Vídeo' : 'Álbum';
-            a.appendChild(badge);
-          }
-          var sr = document.createElement('span');
-          sr.className = 'sr-only';
-          sr.textContent = ' (abre no Instagram)';
-          a.appendChild(sr);
-          li.appendChild(a);
-          igGrid.appendChild(li);
-        });
-      })
-      .catch(function () { /* mantém os quadrados de prévia se o feed não carregar */ });
-  }
 })();
