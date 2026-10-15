@@ -11,6 +11,8 @@
   // Planilha das assinaturas publicada como CSV (Arquivo → Compartilhar → Publicar na Web → aba "Site" → CSV).
   // Cole aqui o link que termina em output=csv. A primeira coluna é o nome; as demais aparecem abaixo dele.
   var SIGNERS_CSV_URL = '';
+  // Feed do Behold (behold.so → seu feed → "JSON Feed URL", ex.: https://feeds.behold.so/abc123)
+  var BEHOLD_FEED_URL = '';
   /* ========================================================= */
 
   var TABS = ['carta', 'referencias', 'assinaturas', 'instagram'];
@@ -203,5 +205,49 @@
         note.textContent = 'A lista é atualizada automaticamente a cada nova assinatura (pode levar alguns minutos).';
       })
       .catch(function () { /* mantém os espaços de exemplo se a planilha não carregar */ });
+  }
+
+  /* ===== Posts reais do Instagram via Behold ===== */
+  var igGrid = document.querySelector('[data-ig-grid]');
+  if (BEHOLD_FEED_URL && igGrid) {
+    fetch(BEHOLD_FEED_URL)
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (data) {
+        var posts = (Array.isArray(data) ? data : data.posts || []).slice(0, 9);
+        if (posts.length > 3) posts = posts.slice(0, posts.length - posts.length % 3); // linhas completas
+        if (!posts.length) return;
+        igGrid.innerHTML = '';
+        posts.forEach(function (post) {
+          var sizes = post.sizes || {};
+          var pick = sizes.medium || sizes.small || sizes.large || {};
+          var src = pick.mediaUrl || (post.mediaType === 'VIDEO' ? post.thumbnailUrl : post.mediaUrl);
+          if (!src) return;
+          var caption = (post.prunedCaption || post.caption || '').trim();
+          var li = document.createElement('li');
+          li.className = 'post post--photo';
+          var a = document.createElement('a');
+          a.href = post.permalink || INSTAGRAM_URL;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          var img = document.createElement('img');
+          img.src = src;
+          img.loading = 'lazy';
+          img.alt = caption ? caption.slice(0, 140) : 'Publicação no Instagram';
+          a.appendChild(img);
+          if (post.mediaType === 'VIDEO' || post.mediaType === 'CAROUSEL_ALBUM') {
+            var badge = document.createElement('span');
+            badge.className = 'post-badge';
+            badge.textContent = post.mediaType === 'VIDEO' ? 'Vídeo' : 'Álbum';
+            a.appendChild(badge);
+          }
+          var sr = document.createElement('span');
+          sr.className = 'sr-only';
+          sr.textContent = ' (abre no Instagram)';
+          a.appendChild(sr);
+          li.appendChild(a);
+          igGrid.appendChild(li);
+        });
+      })
+      .catch(function () { /* mantém os quadrados de prévia se o feed não carregar */ });
   }
 })();
