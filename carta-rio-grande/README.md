@@ -28,9 +28,5 @@ O site lê as colunas B, D e H da planilha de respostas. Para funcionar, a plani
 - **Carta:** parágrafos dentro de `<div class="letter-body">` no `index.html`.
 - **Referências:** itens `<li>` dentro de `<ol class="refs">`. A numeração e o filtro são automáticos.
 
-## Antes de divulgar
-- Troque `og:image` no `index.html` pelo endereço completo depois de publicar
-  (ex.: `https://seusite.com.br/assets/img/og-image.png`). Assim a prévia aparece no WhatsApp e nas redes.
-
-
-> O `carta-rio-grande-arquivo-unico.html` é uma cópia gerada a partir de `public/`. Se você editar o site, gere de novo ou edite os dois.
+## Domínio
+O site está em https://riograndepelobrasil.com.br/ — a imagem de prévia (WhatsApp/redes) já usa esse endereço.
