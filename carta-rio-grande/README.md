@@ -15,16 +15,8 @@ e acesse http://localhost:8080.
 
 Cada aba tem seu próprio link: `#carta`, `#referencias`, `#assinaturas` e `#contato`.
 
-## Quando o Google Forms ficar pronto
-Abra `public/assets/js/main.js` e preencha no topo:
-
-```js
-var FORM_URL = 'https://docs.google.com/forms/d/e/SEU_ID/viewform';
-```
-
-O formulário aparece embutido na aba **Assinaturas**, com um botão para abrir em nova aba.
-A lista "Quem já assinou" ainda é só um espaço visual. Para mostrar os nomes, dá para ligar
-a planilha de respostas do Forms ao site depois.
+## Assinar
+Os botões **Assinar** (topo) e **Assinar a carta** (fim da carta) abrem o Google Forms em nova aba.
 
 ## Contato
 A aba **Contato** mostra o Instagram (@riograndepelobrasil) e o e-mail (riograndepelobrasil@gmail.com), que também aparecem no rodapé.

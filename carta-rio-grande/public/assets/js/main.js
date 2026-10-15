@@ -3,8 +3,6 @@
   'use strict';
 
   /* ===== CONFIGURAÇÃO — preencha quando estiver pronto ===== */
-  // Link do Google Forms. Use o link "incorporar" (termina em ?embedded=true) ou o link normal do formulário.
-  var FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdI3jDKYomnJKrwO6jj3Y6d6f1lj1PSOuUAOQwk4hUf1v1UsA/viewform';
   // Planilha de respostas do Forms: o site lê só as colunas B, D e H (a B aparece como nome).
   // A planilha precisa estar visível para "qualquer pessoa com o link" (Leitor).
   var SIGNERS_CSV_URL = 'https://docs.google.com/spreadsheets/d/1h1Fcr4d4R4TnodCWHhrL0XV0xE6esarxEwazFB4Yi2c/gviz/tq?tqx=out:csv&gid=1031110268&tq=' + encodeURIComponent('select B, D, H');
@@ -121,21 +119,6 @@
   });
   var printBtn = document.querySelector('[data-print]');
   if (printBtn) printBtn.addEventListener('click', function () { showTab('carta'); window.print(); });
-
-  /* ===== Google Forms (quando FORM_URL for preenchido) ===== */
-  var slot = document.querySelector('[data-form-slot]');
-  if (FORM_URL && slot) {
-    var embedUrl = FORM_URL.indexOf('embedded=true') !== -1 ? FORM_URL
-      : FORM_URL + (FORM_URL.indexOf('?') === -1 ? '?' : '&') + 'embedded=true';
-    slot.closest('.sign-card').classList.add('has-form');
-    slot.innerHTML =
-      '<h3>Assine a carta</h3>' +
-      '<div class="form-embed"><iframe src="' + embedUrl + '" title="Formulário de assinatura da carta" loading="lazy">Carregando…</iframe></div>' +
-      '<p><a class="btn btn-line" href="' + FORM_URL + '" target="_blank" rel="noopener">Abrir o formulário em nova aba</a></p>';
-    slot.classList.add('form-embed');
-    var seal = document.querySelector('.sign-seal');
-    if (seal) seal.hidden = true;
-  }
 
 
   /* ===== Lista de assinaturas (planilha publicada como CSV) ===== */

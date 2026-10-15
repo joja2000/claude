@@ -371,3 +371,5 @@ button, input { font: inherit; color: inherit; }
 .contact-icon .icon { width: 26px; height: 26px; }
 .contact-label { font-family: var(--serif-display); font-size: .78rem; letter-spacing: .22em; text-transform: uppercase; opacity: .8; }
 .contact-value { font-family: var(--serif-display); font-size: clamp(1.05rem, .95rem + .5vw, 1.3rem); overflow-wrap: anywhere; }
+
+.signers--solo { margin-top: 0; }

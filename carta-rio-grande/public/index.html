@@ -74,8 +74,8 @@
           <p class="hero-lead">“O Brasil é maior do que qualquer governo. É nosso, e vamos defendê-lo.”</p>
           <div class="hero-actions">
             <a class="btn btn-ink" href="#leitura">Ler a carta</a>
-            <a class="btn btn-line" href="#assinaturas" data-tab-link="assinaturas">
-              <svg class="icon" aria-hidden="true"><use href="#i-pen"/></svg> Assinar
+            <a class="btn btn-line" href="https://docs.google.com/forms/d/e/1FAIpQLSdI3jDKYomnJKrwO6jj3Y6d6f1lj1PSOuUAOQwk4hUf1v1UsA/viewform" target="_blank" rel="noopener">
+              <svg class="icon" aria-hidden="true"><use href="#i-pen"/></svg> Assinar<span class="sr-only"> (formulário abre em nova aba)</span>
             </a>
           </div>
         </div>
@@ -174,35 +174,12 @@
     <section class="panel" id="assinaturas" role="tabpanel" aria-labelledby="tab-assinaturas" tabindex="-1" hidden>
       <div class="wrap narrow">
         <header class="panel-head">
-          <p class="kicker">Assine</p>
+          <p class="kicker">Signatários</p>
           <h2 class="panel-title">Assinaturas</h2>
-          <p class="panel-intro">Cidadãs e cidadãos que pensam diferente, unidos em defesa da Constituição. Acrescente o seu nome à carta.</p>
+          <p class="panel-intro">Cidadãs e cidadãos que pensam diferente, unidos em defesa da Constituição.</p>
         </header>
 
-        <div class="sign-card">
-          <div class="sign-seal" aria-hidden="true">
-            <svg viewBox="0 0 200 200">
-              <defs><path id="sign-circle" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs>
-              <circle cx="100" cy="100" r="96" class="seal-line"/>
-              <circle cx="100" cy="100" r="62" class="seal-line"/>
-              <text class="seal-text"><textPath href="#sign-circle" textLength="480">EU ASSINO · PELO BRASIL · EU ASSINO · PELO BRASIL ·</textPath></text>
-              <use href="#i-pen" x="72" y="72" width="56" height="56" class="seal-icon"/>
-            </svg>
-          </div>
-
-          <!-- Quando o Google Forms estiver pronto, cole o link em FORM_URL no arquivo assets/js/main.js.
-               O formulário aparece aqui automaticamente. -->
-          <div class="form-slot" data-form-slot>
-            <p class="soon">Em breve</p>
-            <h3>O formulário de assinaturas está sendo preparado</h3>
-            <p>Em poucos dias você poderá assinar a carta por aqui, com nome, cidade e estado. Enquanto isso, compartilhe a carta com quem também defende a Constituição.</p>
-            <button class="btn btn-line" type="button" data-share>
-              <svg class="icon" aria-hidden="true"><use href="#i-share"/></svg> Compartilhar a carta
-            </button>
-          </div>
-        </div>
-
-        <div class="signers">
+        <div class="signers signers--solo">
           <h3 class="signers-title">Quem já assinou</h3>
           <p class="signers-count" data-signers-count hidden></p>
           <ul class="signers-list" aria-label="Assinaturas" data-signers-list>

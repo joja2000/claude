@@ -393,6 +393,8 @@ button, input { font: inherit; color: inherit; }
 .contact-label { font-family: var(--serif-display); font-size: .78rem; letter-spacing: .22em; text-transform: uppercase; opacity: .8; }
 .contact-value { font-family: var(--serif-display); font-size: clamp(1.05rem, .95rem + .5vw, 1.3rem); overflow-wrap: anywhere; }
 
+.signers--solo { margin-top: 0; }
+
 </style>
   
 </head>
@@ -445,8 +447,8 @@ button, input { font: inherit; color: inherit; }
           <p class="hero-lead">“O Brasil é maior do que qualquer governo. É nosso, e vamos defendê-lo.”</p>
           <div class="hero-actions">
             <a class="btn btn-ink" href="#leitura">Ler a carta</a>
-            <a class="btn btn-line" href="#assinaturas" data-tab-link="assinaturas">
-              <svg class="icon" aria-hidden="true"><use href="#i-pen"/></svg> Assinar
+            <a class="btn btn-line" href="https://docs.google.com/forms/d/e/1FAIpQLSdI3jDKYomnJKrwO6jj3Y6d6f1lj1PSOuUAOQwk4hUf1v1UsA/viewform" target="_blank" rel="noopener">
+              <svg class="icon" aria-hidden="true"><use href="#i-pen"/></svg> Assinar<span class="sr-only"> (formulário abre em nova aba)</span>
             </a>
           </div>
         </div>
@@ -545,35 +547,12 @@ button, input { font: inherit; color: inherit; }
     <section class="panel" id="assinaturas" role="tabpanel" aria-labelledby="tab-assinaturas" tabindex="-1" hidden>
       <div class="wrap narrow">
         <header class="panel-head">
-          <p class="kicker">Assine</p>
+          <p class="kicker">Signatários</p>
           <h2 class="panel-title">Assinaturas</h2>
-          <p class="panel-intro">Cidadãs e cidadãos que pensam diferente, unidos em defesa da Constituição. Acrescente o seu nome à carta.</p>
+          <p class="panel-intro">Cidadãs e cidadãos que pensam diferente, unidos em defesa da Constituição.</p>
         </header>
 
-        <div class="sign-card">
-          <div class="sign-seal" aria-hidden="true">
-            <svg viewBox="0 0 200 200">
-              <defs><path id="sign-circle" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs>
-              <circle cx="100" cy="100" r="96" class="seal-line"/>
-              <circle cx="100" cy="100" r="62" class="seal-line"/>
-              <text class="seal-text"><textPath href="#sign-circle" textLength="480">EU ASSINO · PELO BRASIL · EU ASSINO · PELO BRASIL ·</textPath></text>
-              <use href="#i-pen" x="72" y="72" width="56" height="56" class="seal-icon"/>
-            </svg>
-          </div>
-
-          <!-- Quando o Google Forms estiver pronto, cole o link em FORM_URL no arquivo assets/js/main.js.
-               O formulário aparece aqui automaticamente. -->
-          <div class="form-slot" data-form-slot>
-            <p class="soon">Em breve</p>
-            <h3>O formulário de assinaturas está sendo preparado</h3>
-            <p>Em poucos dias você poderá assinar a carta por aqui, com nome, cidade e estado. Enquanto isso, compartilhe a carta com quem também defende a Constituição.</p>
-            <button class="btn btn-line" type="button" data-share>
-              <svg class="icon" aria-hidden="true"><use href="#i-share"/></svg> Compartilhar a carta
-            </button>
-          </div>
-        </div>
-
-        <div class="signers">
+        <div class="signers signers--solo">
           <h3 class="signers-title">Quem já assinou</h3>
           <p class="signers-count" data-signers-count hidden></p>
           <ul class="signers-list" aria-label="Assinaturas" data-signers-list>
@@ -633,8 +612,6 @@ button, input { font: inherit; color: inherit; }
   'use strict';
 
   /* ===== CONFIGURAÇÃO — preencha quando estiver pronto ===== */
-  // Link do Google Forms. Use o link "incorporar" (termina em ?embedded=true) ou o link normal do formulário.
-  var FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdI3jDKYomnJKrwO6jj3Y6d6f1lj1PSOuUAOQwk4hUf1v1UsA/viewform';
   // Planilha de respostas do Forms: o site lê só as colunas B, D e H (a B aparece como nome).
   // A planilha precisa estar visível para "qualquer pessoa com o link" (Leitor).
   var SIGNERS_CSV_URL = 'https://docs.google.com/spreadsheets/d/1h1Fcr4d4R4TnodCWHhrL0XV0xE6esarxEwazFB4Yi2c/gviz/tq?tqx=out:csv&gid=1031110268&tq=' + encodeURIComponent('select B, D, H');
@@ -751,21 +728,6 @@ button, input { font: inherit; color: inherit; }
   });
   var printBtn = document.querySelector('[data-print]');
   if (printBtn) printBtn.addEventListener('click', function () { showTab('carta'); window.print(); });
-
-  /* ===== Google Forms (quando FORM_URL for preenchido) ===== */
-  var slot = document.querySelector('[data-form-slot]');
-  if (FORM_URL && slot) {
-    var embedUrl = FORM_URL.indexOf('embedded=true') !== -1 ? FORM_URL
-      : FORM_URL + (FORM_URL.indexOf('?') === -1 ? '?' : '&') + 'embedded=true';
-    slot.closest('.sign-card').classList.add('has-form');
-    slot.innerHTML =
-      '<h3>Assine a carta</h3>' +
-      '<div class="form-embed"><iframe src="' + embedUrl + '" title="Formulário de assinatura da carta" loading="lazy">Carregando…</iframe></div>' +
-      '<p><a class="btn btn-line" href="' + FORM_URL + '" target="_blank" rel="noopener">Abrir o formulário em nova aba</a></p>';
-    slot.classList.add('form-embed');
-    var seal = document.querySelector('.sign-seal');
-    if (seal) seal.hidden = true;
-  }
 
 
   /* ===== Lista de assinaturas (planilha publicada como CSV) ===== */
