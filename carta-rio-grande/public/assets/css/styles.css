@@ -272,7 +272,7 @@ button, input { font: inherit; color: inherit; }
 .sign-seal { width: 150px; }
 .seal-line { fill: none; stroke: var(--ink); stroke-width: 1.5; }
 .seal-text { font-family: var(--serif-display); font-size: 12.5px; letter-spacing: .1em; fill: var(--ink); }
-.sign-seal svg { animation: spin 60s linear infinite; }
+.sign-seal .seal-text { transform-origin: 100px 100px; animation: spin 60s linear infinite; }
 .seal-icon { color: var(--ink); }
 
 .form-slot { max-width: 34rem; }
@@ -306,6 +306,11 @@ button, input { font: inherit; color: inherit; }
 .signer-ghost span { display: block; height: 10px; border-radius: 6px; background: var(--paper-2); }
 .signer-ghost span:first-child { width: 70%; height: 12px; }
 .signer-ghost span:last-child { width: 45%; }
+.signers-count { text-align: center; font-family: var(--serif-display); font-size: 1.05rem; letter-spacing: .08em; margin: -.6rem 0 1.4rem; }
+.signer { display: grid; gap: .15rem; padding: .9rem 1.1rem; border: 1px solid var(--line); border-radius: 10px; background: var(--sheet); }
+.signer strong { font-family: var(--serif-display); font-weight: 400; font-size: 1.02rem; }
+.signer span { font-size: .92rem; color: var(--ink-soft); }
+.panel-intro a, .site-foot p a { text-underline-offset: 3px; }
 .signers-note { margin-top: 1.2rem; text-align: center; font-style: italic; color: var(--ink-soft); }
 
 /* ---------- Instagram ---------- */
@@ -388,3 +393,7 @@ button, input { font: inherit; color: inherit; }
   .letter-sheet::before { display: none; }
   .letter-body p { font-size: 11.5pt; }
 }
+
+/* Formulário embutido ocupa o cartão inteiro */
+.sign-card.has-form .form-slot { max-width: none; width: 100%; }
+.sign-card.has-form .form-slot h3 { text-align: center; }
