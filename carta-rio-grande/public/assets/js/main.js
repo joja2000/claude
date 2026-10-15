@@ -5,7 +5,9 @@
   /* ===== CONFIGURAÇÃO — preencha quando estiver pronto ===== */
   // Planilha de respostas do Forms: o site lê só as colunas B, D e H (a B aparece como nome).
   // A planilha precisa estar visível para "qualquer pessoa com o link" (Leitor).
-  var SIGNERS_CSV_URL = 'https://docs.google.com/spreadsheets/d/1h1Fcr4d4R4TnodCWHhrL0XV0xE6esarxEwazFB4Yi2c/gviz/tq?tqx=out:csv&gid=1031110268&tq=' + encodeURIComponent('select B, D, H');
+  var SHEET_ID = '1h1Fcr4d4R4TnodCWHhrL0XV0xE6esarxEwazFB4Yi2c';
+  var SHEET_GID = '1031110268';
+  var SHEET_QUERY = 'select B, D, H';
   /* ========================================================= */
 
   var TABS = ['carta', 'referencias', 'assinaturas', 'contato'];
@@ -121,55 +123,61 @@
   if (printBtn) printBtn.addEventListener('click', function () { showTab('carta'); window.print(); });
 
 
-  /* ===== Lista de assinaturas (planilha publicada como CSV) ===== */
-  function parseCSV(text) {
-    var rows = [], row = [], cell = '', q = false;
-    for (var i = 0; i < text.length; i++) {
-      var c = text[i];
-      if (q) {
-        if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; }
-        else if (c === '"') q = false;
-        else cell += c;
-      } else if (c === '"') q = true;
-      else if (c === ',') { row.push(cell); cell = ''; }
-      else if (c === '\n' || c === '\r') {
-        if (c === '\r' && text[i + 1] === '\n') i++;
-        row.push(cell); rows.push(row); row = []; cell = '';
-      } else cell += c;
-    }
-    if (cell || row.length) { row.push(cell); rows.push(row); }
-    return rows;
-  }
-
+  /* ===== Lista de assinaturas (lida da planilha do Google) =====
+     Usa o modo "script" (JSONP) da API de visualização do Google: funciona no site
+     publicado e também abrindo o arquivo direto no computador. */
   var list = document.querySelector('[data-signers-list]');
-  if (SIGNERS_CSV_URL && list) {
-    fetch(SIGNERS_CSV_URL, { cache: 'no-store' })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
-      .then(function (text) {
-        var rows = parseCSV(text).slice(1).filter(function (r) { return r[0] && r[0].trim(); });
-        var counter = document.querySelector('[data-signers-count]');
-        var note = document.querySelector('[data-signers-note]');
-        list.innerHTML = '';
-        if (!rows.length) return;
-        rows.reverse().forEach(function (r) {
-          var li = document.createElement('li');
-          li.className = 'signer';
-          var name = document.createElement('strong');
-          name.textContent = r[0].trim();
-          li.appendChild(name);
-          var extra = r.slice(1).map(function (v) { return v.trim(); }).filter(Boolean).join(' · ');
-          if (extra) {
-            var small = document.createElement('span');
-            small.textContent = extra;
-            li.appendChild(small);
-          }
-          list.appendChild(li);
-        });
-        counter.textContent = rows.length === 1 ? '1 assinatura' : rows.length.toLocaleString('pt-BR') + ' assinaturas';
-        counter.hidden = false;
-        note.textContent = 'A lista é atualizada automaticamente a cada nova assinatura (pode levar alguns minutos).';
-      })
-      .catch(function () { /* mantém os espaços de exemplo se a planilha não carregar */ });
+
+  function renderSigners(rows) {
+    var counter = document.querySelector('[data-signers-count]');
+    var note = document.querySelector('[data-signers-note]');
+    rows = rows.filter(function (r) { return r[0] && String(r[0]).trim(); });
+    if (!rows.length) return;
+    list.innerHTML = '';
+    rows.reverse().forEach(function (r) {
+      var li = document.createElement('li');
+      li.className = 'signer';
+      var name = document.createElement('strong');
+      name.textContent = String(r[0]).trim();
+      li.appendChild(name);
+      var extra = r.slice(1).map(function (v) { return String(v == null ? '' : v).trim(); }).filter(Boolean).join(' · ');
+      if (extra) {
+        var small = document.createElement('span');
+        small.textContent = extra;
+        li.appendChild(small);
+      }
+      list.appendChild(li);
+    });
+    counter.textContent = rows.length === 1 ? '1 assinatura' : rows.length.toLocaleString('pt-BR') + ' assinaturas';
+    counter.hidden = false;
+    note.textContent = 'A lista é atualizada automaticamente a cada nova assinatura (pode levar alguns minutos).';
   }
 
+  if (SHEET_ID && list) {
+    var cb = '__assinaturas' + Date.now();
+    window[cb] = function (resp) {
+      delete window[cb];
+      if (!resp || resp.status === 'error' || !resp.table) {
+        if (window.console) console.warn('Planilha de assinaturas: ', resp && resp.errors);
+        return;
+      }
+      renderSigners(resp.table.rows.map(function (row) {
+        return (row.c || []).map(function (cell) {
+          return cell ? (cell.f != null ? cell.f : cell.v) : '';
+        });
+      }));
+    };
+    var s = document.createElement('script');
+    s.src = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq'
+      + '?gid=' + SHEET_GID
+      + '&headers=1'
+      + '&tq=' + encodeURIComponent(SHEET_QUERY)
+      + '&tqx=' + encodeURIComponent('out:json;responseHandler:' + cb)
+      + '&_=' + Date.now();
+    s.async = true;
+    s.onerror = function () {
+      if (window.console) console.warn('Não foi possível ler a planilha de assinaturas. Ela está compartilhada como "Qualquer pessoa com o link"?');
+    };
+    document.head.appendChild(s);
+  }
 })();
